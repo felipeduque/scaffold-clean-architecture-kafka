@@ -242,12 +242,12 @@ PostgreSQL
 Correr el proyecto:
 ./gradlew bootRun
 
-Seguridad JWT API con AzureAD Tenant:
+-Seguridad JWT API con AzureAD Tenant:
 
-ClientId: 965239c6-1310-4488-93b7-92cff18b70c4
-Scope: api://965239c6-1310-4488-93b7-92cff18b70c4
+-ClientId: 965239c6-1310-4488-93b7-92cff18b70c4
+-Scope: api://965239c6-1310-4488-93b7-92cff18b70c4
 
-Cada peticion a las API debe ser con JWT del Directorio Activo Azure, Bearer Token Authorization.
+-Cada peticion a las API debe ser con JWT del Directorio Activo Azure, Bearer Token Authorization.
 
 # _**Docker Kafka **_
 
