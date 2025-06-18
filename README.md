@@ -55,6 +55,16 @@ PUT /api/v1/orders/{id}/items → Modificar ítems del pedido
 
 GET /api/v1/orders/{id} → Obtener pedido
 
+# **PostgreSQL**
+# **r2dbc**
+
+
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
+
 CREATE TABLE IF NOT EXISTS public.customers
 (
 id integer NOT NULL DEFAULT nextval('customers_id_seq'::regclass),
@@ -235,8 +245,7 @@ TABLESPACE pg_default;
 ALTER TABLE IF EXISTS public.vendors
 OWNER to postgres;
 
-# **r2dbc**
-PostgreSQL
+
 
 # **Gradle**
 Correr el proyecto:
