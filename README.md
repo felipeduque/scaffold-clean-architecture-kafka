@@ -60,190 +60,74 @@ GET /api/v1/orders/{id} → Obtener pedido
 
 
 ```ruby
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html
+
+-- Tabla de vendedores
+CREATE TABLE vendors (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de centros de distribución
+CREATE TABLE distribution_centers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    location TEXT NOT NULL
+);
+
+-- Tabla de productos
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    vendor_id INT NOT NULL REFERENCES vendors(id),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de inventario
+CREATE TABLE inventory (
+    id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL REFERENCES products(id),
+    distribution_center_id INT NOT NULL REFERENCES distribution_centers(id),
+    stock INT NOT NULL DEFAULT 0,
+    UNIQUE(product_id, distribution_center_id)
+);
+
+-- Tabla de pedidos
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+    total NUMERIC(12, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de ítems del pedido
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id INT NOT NULL REFERENCES products(id),
+    quantity INT NOT NULL,
+    price NUMERIC(10, 2) NOT NULL,
+    distribution_center_id INT NOT NULL REFERENCES distribution_centers(id)
+);
+
+-- Tabla de pagos
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    payment_method VARCHAR(50) NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    amount NUMERIC(12, 2) NOT NULL,
+    status VARCHAR(50) DEFAULT 'COMPLETED'
+);
+
+
 ```
 
-CREATE TABLE IF NOT EXISTS public.customers
-(
-id integer NOT NULL DEFAULT nextval('customers_id_seq'::regclass),
-name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-email character varying(255) COLLATE pg_catalog."default" NOT NULL,
-created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT customers_pkey PRIMARY KEY (id),
-CONSTRAINT customers_email_key UNIQUE (email)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.customers
-OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.distribution_centers
-(
-id integer NOT NULL DEFAULT nextval('distribution_centers_id_seq'::regclass),
-name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-location text COLLATE pg_catalog."default" NOT NULL,
-CONSTRAINT distribution_centers_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.distribution_centers
-OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.inventory
-(
-id integer NOT NULL DEFAULT nextval('inventory_id_seq'::regclass),
-product_id integer NOT NULL,
-distribution_center_id integer NOT NULL,
-stock integer NOT NULL DEFAULT 0,
-CONSTRAINT inventory_pkey PRIMARY KEY (id),
-CONSTRAINT inventory_product_id_distribution_center_id_key UNIQUE (product_id, distribution_center_id),
-CONSTRAINT inventory_distribution_center_id_fkey FOREIGN KEY (distribution_center_id)
-REFERENCES public.distribution_centers (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-CONSTRAINT inventory_product_id_fkey FOREIGN KEY (product_id)
-REFERENCES public.products (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.inventory
-OWNER to postgres;
--- Index: idx_inventory_product_center
-
--- DROP INDEX IF EXISTS public.idx_inventory_product_center;
-
-CREATE INDEX IF NOT EXISTS idx_inventory_product_center
-ON public.inventory USING btree
-(product_id ASC NULLS LAST, distribution_center_id ASC NULLS LAST)
-TABLESPACE pg_default;
-
-CREATE TABLE IF NOT EXISTS public.order_items
-(
-id integer NOT NULL DEFAULT nextval('order_items_id_seq'::regclass),
-order_id integer NOT NULL,
-product_id integer NOT NULL,
-quantity integer NOT NULL,
-price numeric(10,2) NOT NULL,
-distribution_center_id integer NOT NULL,
-CONSTRAINT order_items_pkey PRIMARY KEY (id),
-CONSTRAINT order_items_order_id_product_id_key UNIQUE (order_id, product_id),
-CONSTRAINT order_items_distribution_center_id_fkey FOREIGN KEY (distribution_center_id)
-REFERENCES public.distribution_centers (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-CONSTRAINT order_items_order_id_fkey FOREIGN KEY (order_id)
-REFERENCES public.orders (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE CASCADE,
-CONSTRAINT order_items_product_id_fkey FOREIGN KEY (product_id)
-REFERENCES public.products (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.order_items
-OWNER to postgres;
--- Index: idx_order_items_order
-
--- DROP INDEX IF EXISTS public.idx_order_items_order;
-
-CREATE INDEX IF NOT EXISTS idx_order_items_order
-ON public.order_items USING btree
-(order_id ASC NULLS LAST)
-TABLESPACE pg_default;
-
-CREATE TABLE IF NOT EXISTS public.orders
-(
-id integer NOT NULL DEFAULT nextval('orders_id_seq'::regclass),
-customer_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-customer_email character varying(255) COLLATE pg_catalog."default" NOT NULL,
-status character varying(50) COLLATE pg_catalog."default" NOT NULL DEFAULT 'PENDING'::character varying,
-total numeric(12,2),
-created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-customer_id integer,
-CONSTRAINT orders_pkey PRIMARY KEY (id),
-CONSTRAINT orders_customer_id_fkey FOREIGN KEY (customer_id)
-REFERENCES public.customers (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.orders
-OWNER to postgres;
--- Index: idx_orders_email
-
--- DROP INDEX IF EXISTS public.idx_orders_email;
-
-CREATE INDEX IF NOT EXISTS idx_orders_email
-ON public.orders USING btree
-(customer_email COLLATE pg_catalog."default" ASC NULLS LAST)
-TABLESPACE pg_default;
-
-CREATE TABLE IF NOT EXISTS public.payments
-(
-id integer NOT NULL DEFAULT nextval('payments_id_seq'::regclass),
-order_id integer NOT NULL,
-payment_method character varying(50) COLLATE pg_catalog."default" NOT NULL,
-payment_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-amount numeric(12,2) NOT NULL,
-status character varying(50) COLLATE pg_catalog."default" DEFAULT 'COMPLETED'::character varying,
-CONSTRAINT payments_pkey PRIMARY KEY (id),
-CONSTRAINT payments_order_id_fkey FOREIGN KEY (order_id)
-REFERENCES public.orders (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE CASCADE
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.payments
-OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.products
-(
-id integer NOT NULL DEFAULT nextval('products_id_seq'::regclass),
-vendor_id integer NOT NULL,
-name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-description text COLLATE pg_catalog."default",
-price numeric(10,2) NOT NULL,
-created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT products_pkey PRIMARY KEY (id),
-CONSTRAINT products_vendor_id_fkey FOREIGN KEY (vendor_id)
-REFERENCES public.vendors (id) MATCH SIMPLE
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.products
-OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.vendors
-(
-id integer NOT NULL DEFAULT nextval('vendors_id_seq'::regclass),
-name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-email character varying(255) COLLATE pg_catalog."default" NOT NULL,
-created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-CONSTRAINT vendors_pkey PRIMARY KEY (id),
-CONSTRAINT vendors_email_key UNIQUE (email)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.vendors
-OWNER to postgres;
 
 
 
