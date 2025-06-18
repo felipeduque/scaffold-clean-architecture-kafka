@@ -245,6 +245,7 @@ Correr el proyecto:
 -Seguridad JWT API con AzureAD Tenant:
 
 -ClientId: 965239c6-1310-4488-93b7-92cff18b70c4
+
 -Scope: api://965239c6-1310-4488-93b7-92cff18b70c4
 
 -Cada peticion a las API debe ser con JWT del Directorio Activo Azure, Bearer Token Authorization.
