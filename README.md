@@ -252,7 +252,7 @@ Cada peticion a las API debe ser con JWT del Directorio Activo Azure, Bearer Tok
 # _**_Docker Kafka _**_
 
 imagen con docker-compose.yml:
-`version: '3.8'
+version: '3.8'
 
 services:
 zookeeper:
@@ -278,7 +278,7 @@ KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 ports:
-- "9092:9092"`
+- "9092:9092"
 
 # **Run:** 
 
