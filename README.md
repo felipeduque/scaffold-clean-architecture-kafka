@@ -61,15 +61,12 @@ GET /api/v1/orders/{id} → Obtener pedido
 
 ```ruby
 -- Tabla de customers
-CREATE TABLE IF NOT EXISTS public.customers
-(
-    id integer NOT NULL DEFAULT nextval('customers_id_seq'::regclass),
-    name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    email character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT customers_pkey PRIMARY KEY (id),
-    CONSTRAINT customers_email_key UNIQUE (email)
-)
+CREATE TABLE customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Tabla de vendedores
 CREATE TABLE vendors (
