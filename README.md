@@ -192,7 +192,7 @@ services:
 
 docker-compose up -d
 
-![Kafka producer](https://drive.google.com/file/d/13BaXkt9UN1xThDrRoheFw-3zIE5x6LxX/view?usp=sharing)
+![Kafka producer](https://ibb.co/CsWCv7cW)
 
 ![Kafka consumer](https://drive.google.com/file/d/1FrNMVQ595oGWLtmYDhqD8BOmssC1LXyc/view?usp=sharing)
 
