@@ -249,36 +249,11 @@ Scope: api://965239c6-1310-4488-93b7-92cff18b70c4
 
 Cada peticion a las API debe ser con JWT del Directorio Activo Azure, Bearer Token Authorization.
 
-# _**_Docker Kafka _**_
+# _**Docker Kafka **_
 
 imagen con docker-compose.yml:
-version: '3.8'
-
-services:
-zookeeper:
-image: confluentinc/cp-zookeeper:latest
-container_name: zookeeper
-environment:
-ZOOKEEPER_CLIENT_PORT: 2181
-ZOOKEEPER_TICK_TIME: 2000
-ports:
-- 2181:2181
-
-kafka:
-image: confluentinc/cp-kafka:latest
-container_name: kafka
-depends_on:
-- zookeeper
-environment:
-KAFKA_BROKER_ID: 1
-KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
-KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-ports:
-- "9092:9092"
+-
+ [docker-compose.yml](https://drive.google.com/file/d/13NtGsA78bhLQ0j0zDHSGs7065NpFR23z/view?usp=sharing)
 
 # **Run:** 
 
