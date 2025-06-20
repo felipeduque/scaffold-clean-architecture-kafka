@@ -18,6 +18,6 @@ public record PostgresqlConnectionProperties(
         if (database == null) database = "postgres";
         if (schema == null) schema = "public";
         if (username == null) username = "postgres";
-        if (password == null) password = "Develop@0531";
+        if (password == null) password = "123456789";
     }
 }

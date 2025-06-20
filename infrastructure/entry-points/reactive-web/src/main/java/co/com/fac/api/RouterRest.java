@@ -16,9 +16,9 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(GET("/api/usecase/path"), handler::listenGETUseCase)
                 .andRoute(POST("/api/add/orders"), handler::listenPOSTUseCase)
-                .andRoute(GET("/api/path/orders/{id}"), handler::listenGETOtherUseCase)
+                .andRoute(GET("/api/path/orders/{id}"), handler::listenGETOrdersIdUseCase)
                 .andRoute(GET("/api/orders/filter"), handler::listenGETOrdersByFilters)
                 .andRoute(GET("/api/v1/orders/customer/{customerId}"), handler::listenGETOrdersByCustomerId)
-                .andRoute(DELETE("/api/orders/delete/{id}"), handler::listenDELETEUseCase);
+                .andRoute(DELETE("/api/orders/delete/{id}"), handler::listenDeleteUseCase);
     }
 }

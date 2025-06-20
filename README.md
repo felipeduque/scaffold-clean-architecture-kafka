@@ -49,11 +49,15 @@ Este módulo es el más externo de la arquitectura, es el encargado de ensamblar
 
 **Creación de tablas en PostgreSQL:**
 
-POST /api/v1/orders → Crear pedido
+POST [/api/v1/orders](http://localhost:8080/api/add/orders) → Crear pedido
 
 PUT /api/v1/orders/{id}/items → Modificar ítems del pedido
 
-GET /api/v1/orders/{id} → Obtener pedido
+GET [/api/path/orders/1)](http://localhost:8080/api/path/orders/1) → Obtener pedido
+
+GET [/api/orders/filter?status=paid&customer_name=juan&created_at=2025-06-19T13:59:47)](http://localhost:8080/api/orders/filter?status=paid&customer_name=juan&created_at=2025-06-19T13:59:47) → Buscar  pedido
+
+DELETE [/api/orders/delete/5)](http://localhost:8080/api/orders/delete/5) → Buscar  pedido
 
 # **PostgreSQL**
 # **r2dbc**

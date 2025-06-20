@@ -24,7 +24,7 @@ public class Handler {
 //private  final UseCase useCase;
 private final CreateOrderUseCase createOrderUseCase;
 private final DeleteOrderUseCase deleteOrderUseCase;
-private final OrdersRepository tourRepository;
+private final OrdersRepository ordersRepository;
 private final FindOrdersByFiltersUseCase findOrdersByFiltersUseCase;
 private final FindOrdersByCustomerIdUseCase findOrdersByCustomerIdUseCase;
 
@@ -33,13 +33,13 @@ private final FindOrdersByCustomerIdUseCase findOrdersByCustomerIdUseCase;
         return ServerResponse.ok().bodyValue("");
     }
 
-    public Mono<ServerResponse> listenGETOtherUseCase(ServerRequest serverRequest) {
+    public Mono<ServerResponse> listenGETOrdersIdUseCase(ServerRequest serverRequest) {
         return Mono.just(serverRequest)
                 .map(request -> request.pathVariable("id"))
                 .map(Integer::parseInt)
-                .flatMap(tourRepository::findById)
-                .flatMap(tour -> {
-                    Map<String, List<Orders>> response = Map.of("orders", List.of(tour));
+                .flatMap(ordersRepository::findById)
+                .flatMap(order -> {
+                    Map<String, List<Orders>> response = Map.of("orders", List.of(order));
                     return ServerResponse.ok().bodyValue(response);
                 })
                 .onErrorResume(NumberFormatException.class, 
@@ -81,7 +81,7 @@ private final FindOrdersByCustomerIdUseCase findOrdersByCustomerIdUseCase;
                         .bodyValue(Map.of("error", "Error creating order: " + e.getMessage())));
     }
 
-    public Mono<ServerResponse> listenDELETEUseCase(ServerRequest serverRequest) {
+    public Mono<ServerResponse> listenDeleteUseCase(ServerRequest serverRequest) {
         return Mono.just(serverRequest)
                 .map(request -> request.pathVariable("id"))
                 .map(Long::parseLong)
